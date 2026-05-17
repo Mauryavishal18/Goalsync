@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AtomQuest Architecture Diagram</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8faff; margin: 0; padding: 40px; }
+  h1 { color: #1e293b; font-size: 22px; margin-bottom: 6px; }
+  p { color: #64748b; font-size: 14px; margin-bottom: 32px; }
+</style>
+</head>
+<body>
+<h1>⚡ AtomQuest — System Architecture</h1>
+<p>Goal Setting & Tracking Portal | Atomberg Technologies | AtomQuest Hackathon 2026</p>
+
+<svg viewBox="0 0 900 640" xmlns="http://www.w3.org/2000/svg" width="900" height="640" style="border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,0.10);background:#fff;">
+  <!-- Background -->
+  <rect width="900" height="640" fill="#ffffff" rx="16"/>
+
+  <!-- Title -->
+  <text x="450" y="36" text-anchor="middle" font-size="18" font-weight="800" fill="#1e293b">AtomQuest System Architecture</text>
+  <text x="450" y="54" text-anchor="middle" font-size="12" fill="#94a3b8">React Frontend → Express Backend → SQLite Database</text>
+
+  <!-- USERS LAYER -->
+  <rect x="30" y="80" width="840" height="130" rx="12" fill="#f0f4ff" stroke="#c7d2fe" stroke-width="1.5"/>
+  <text x="50" y="102" font-size="12" font-weight="700" fill="#4338ca">👥 USER LAYER</text>
+
+  <!-- Employee -->
+  <rect x="60" y="112" width="160" height="80" rx="10" fill="#d1fae5" stroke="#6ee7b7" stroke-width="1.5"/>
+  <text x="140" y="138" text-anchor="middle" font-size="22">👤</text>
+  <text x="140" y="158" text-anchor="middle" font-size="13" font-weight="700" fill="#065f46">Employee</text>
+  <text x="140" y="172" text-anchor="middle" font-size="10" fill="#047857">Set Goals · Log Achievement</text>
+  <text x="140" y="184" text-anchor="middle" font-size="10" fill="#047857">Quarterly Updates</text>
+
+  <!-- Manager -->
+  <rect x="370" y="112" width="160" height="80" rx="10" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="450" y="138" text-anchor="middle" font-size="22">👔</text>
+  <text x="450" y="158" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">Manager (L1)</text>
+  <text x="450" y="172" text-anchor="middle" font-size="10" fill="#1d4ed8">Approve · Check-in</text>
+  <text x="450" y="184" text-anchor="middle" font-size="10" fill="#1d4ed8">Push Shared Goals</text>
+
+  <!-- Admin -->
+  <rect x="680" y="112" width="160" height="80" rx="10" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1.5"/>
+  <text x="760" y="138" text-anchor="middle" font-size="22">🛡️</text>
+  <text x="760" y="158" text-anchor="middle" font-size="13" font-weight="700" fill="#5b21b6">Admin / HR</text>
+  <text x="760" y="172" text-anchor="middle" font-size="10" fill="#6d28d9">Configure · Audit</text>
+  <text x="760" y="184" text-anchor="middle" font-size="10" fill="#6d28d9">Reports · Unlock</text>
+
+  <!-- Arrows down to frontend -->
+  <line x1="140" y1="192" x2="140" y2="226" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4"/>
+  <line x1="450" y1="192" x2="450" y2="226" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4"/>
+  <line x1="760" y1="192" x2="760" y2="226" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4"/>
+
+  <!-- FRONTEND LAYER -->
+  <rect x="30" y="226" width="840" height="130" rx="12" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
+  <text x="50" y="248" font-size="12" font-weight="700" fill="#c2410c">⚛️ FRONTEND — React 18 + React Router v6</text>
+
+  <rect x="55" y="258" width="120" height="84" rx="8" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="115" y="276" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">Dashboard</text>
+  <text x="115" y="290" text-anchor="middle" font-size="9" fill="#64748b">Role-aware</text>
+  <text x="115" y="302" text-anchor="middle" font-size="9" fill="#64748b">Stats Cards</text>
+  <text x="115" y="314" text-anchor="middle" font-size="9" fill="#64748b">Progress Tables</text>
+  <text x="115" y="326" text-anchor="middle" font-size="9" fill="#64748b">Goal Overview</text>
+  <text x="115" y="336" text-anchor="middle" font-size="9" fill="#64748b">Quarter Status</text>
+
+  <rect x="190" y="258" width="120" height="84" rx="8" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="250" y="276" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">Goal Creation</text>
+  <text x="250" y="290" text-anchor="middle" font-size="9" fill="#64748b">Dynamic Form</text>
+  <text x="250" y="302" text-anchor="middle" font-size="9" fill="#64748b">Live Validation</text>
+  <text x="250" y="314" text-anchor="middle" font-size="9" fill="#64748b">Weightage Bar</text>
+  <text x="250" y="326" text-anchor="middle" font-size="9" fill="#64748b">Draft / Submit</text>
+  <text x="250" y="336" text-anchor="middle" font-size="9" fill="#64748b">Auto-distribute</text>
+
+  <rect x="325" y="258" width="120" height="84" rx="8" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="385" y="276" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">Approval Flow</text>
+  <text x="385" y="290" text-anchor="middle" font-size="9" fill="#64748b">Team Sheet List</text>
+  <text x="385" y="302" text-anchor="middle" font-size="9" fill="#64748b">Inline Editing</text>
+  <text x="385" y="314" text-anchor="middle" font-size="9" fill="#64748b">Approve/Return</text>
+  <text x="385" y="326" text-anchor="middle" font-size="9" fill="#64748b">Admin Unlock</text>
+  <text x="385" y="336" text-anchor="middle" font-size="9" fill="#64748b">Comments</text>
+
+  <rect x="460" y="258" width="120" height="84" rx="8" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="520" y="276" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">Quarterly Update</text>
+  <text x="520" y="290" text-anchor="middle" font-size="9" fill="#64748b">Q1/Q2/Q3/Q4 Tabs</text>
+  <text x="520" y="302" text-anchor="middle" font-size="9" fill="#64748b">Achievement Input</text>
+  <text x="520" y="314" text-anchor="middle" font-size="9" fill="#64748b">Score Display</text>
+  <text x="520" y="326" text-anchor="middle" font-size="9" fill="#64748b">Check-in Comments</text>
+  <text x="520" y="336" text-anchor="middle" font-size="9" fill="#64748b">Status Tracking</text>
+
+  <rect x="595" y="258" width="120" height="84" rx="8" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="655" y="276" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">Reports</text>
+  <text x="655" y="290" text-anchor="middle" font-size="9" fill="#64748b">CSV Export</text>
+  <text x="655" y="302" text-anchor="middle" font-size="9" fill="#64748b">Completion Board</text>
+  <text x="655" y="314" text-anchor="middle" font-size="9" fill="#64748b">Analytics Charts</text>
+  <text x="655" y="326" text-anchor="middle" font-size="9" fill="#64748b">Audit Trail</text>
+  <text x="655" y="336" text-anchor="middle" font-size="9" fill="#64748b">Recharts Visuals</text>
+
+  <rect x="730" y="258" width="120" height="84" rx="8" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="790" y="276" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">Shared Goals</text>
+  <text x="790" y="290" text-anchor="middle" font-size="9" fill="#64748b">Multi-select</text>
+  <text x="790" y="302" text-anchor="middle" font-size="9" fill="#64748b">Employees</text>
+  <text x="790" y="314" text-anchor="middle" font-size="9" fill="#64748b">Push KPIs</text>
+  <text x="790" y="326" text-anchor="middle" font-size="9" fill="#64748b">Read-only fields</text>
+  <text x="790" y="336" text-anchor="middle" font-size="9" fill="#64748b">for recipients</text>
+
+  <!-- Arrow to backend -->
+  <line x1="450" y1="356" x2="450" y2="390" stroke="#667eea" stroke-width="2"/>
+  <polygon points="450,390 444,378 456,378" fill="#667eea"/>
+  <rect x="330" y="360" width="240" height="20" rx="6" fill="#eff6ff"/>
+  <text x="450" y="374" text-anchor="middle" font-size="10" fill="#3b82f6" font-weight="600">JWT Auth · Axios HTTP · REST API</text>
+
+  <!-- BACKEND LAYER -->
+  <rect x="30" y="396" width="840" height="110" rx="12" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <text x="50" y="418" font-size="12" font-weight="700" fill="#15803d">🖥️ BACKEND — Node.js + Express.js</text>
+
+  <rect x="60" y="428" width="140" height="64" rx="8" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="130" y="447" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">Auth Routes</text>
+  <text x="130" y="461" text-anchor="middle" font-size="9" fill="#64748b">POST /login</text>
+  <text x="130" y="473" text-anchor="middle" font-size="9" fill="#64748b">GET /me</text>
+  <text x="130" y="485" text-anchor="middle" font-size="9" fill="#64748b">JWT Middleware</text>
+
+  <rect x="220" y="428" width="180" height="64" rx="8" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="310" y="447" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">Goals Routes</text>
+  <text x="310" y="461" text-anchor="middle" font-size="9" fill="#64748b">CRUD Goals · Submit · Approve</text>
+  <text x="310" y="473" text-anchor="middle" font-size="9" fill="#64748b">Return · Unlock · Shared Goals</text>
+  <text x="310" y="485" text-anchor="middle" font-size="9" fill="#64748b">Quarterly Update · Check-in</text>
+
+  <rect x="420" y="428" width="200" height="64" rx="8" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="520" y="447" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">Reports Routes</text>
+  <text x="520" y="461" text-anchor="middle" font-size="9" fill="#64748b">Achievement CSV · Completion Board</text>
+  <text x="520" y="473" text-anchor="middle" font-size="9" fill="#64748b">Audit Trail · Analytics</text>
+  <text x="520" y="485" text-anchor="middle" font-size="9" fill="#64748b">Manager Effectiveness · Dept Stats</text>
+
+  <rect x="640" y="428" width="200" height="64" rx="8" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="740" y="447" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">Business Logic</text>
+  <text x="740" y="461" text-anchor="middle" font-size="9" fill="#64748b">Progress Score Formula Engine</text>
+  <text x="740" y="473" text-anchor="middle" font-size="9" fill="#64748b">Validation (max 8, min 10%, =100%)</text>
+  <text x="740" y="485" text-anchor="middle" font-size="9" fill="#64748b">Audit Logging · bcryptjs Auth</text>
+
+  <!-- Arrow to DB -->
+  <line x1="450" y1="506" x2="450" y2="540" stroke="#10b981" stroke-width="2"/>
+  <polygon points="450,540 444,528 456,528" fill="#10b981"/>
+
+  <!-- DATABASE LAYER -->
+  <rect x="30" y="546" width="840" height="80" rx="12" fill="#fdf4ff" stroke="#e9d5ff" stroke-width="1.5"/>
+  <text x="50" y="568" font-size="12" font-weight="700" fill="#7e22ce">🗄️ DATABASE — SQLite (better-sqlite3)</text>
+
+  <rect x="60" y="576" width="120" height="36" rx="6" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="120" y="598" text-anchor="middle" font-size="10" fill="#374151" font-weight="600">users</text>
+
+  <rect x="196" y="576" width="120" height="36" rx="6" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="256" y="598" text-anchor="middle" font-size="10" fill="#374151" font-weight="600">goal_sheets</text>
+
+  <rect x="332" y="576" width="100" height="36" rx="6" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="382" y="598" text-anchor="middle" font-size="10" fill="#374151" font-weight="600">goals</text>
+
+  <rect x="448" y="576" width="140" height="36" rx="6" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="518" y="598" text-anchor="middle" font-size="10" fill="#374151" font-weight="600">quarterly_updates</text>
+
+  <rect x="604" y="576" width="110" height="36" rx="6" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="659" y="598" text-anchor="middle" font-size="10" fill="#374151" font-weight="600">audit_logs</text>
+
+  <rect x="730" y="576" width="120" height="36" rx="6" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="790" y="598" text-anchor="middle" font-size="10" fill="#374151" font-weight="600">goal_cycles</text>
+
+  <!-- Footer -->
+  <text x="450" y="632" text-anchor="middle" font-size="10" fill="#94a3b8">AtomQuest Hackathon 2026 · Built with React + Node.js + SQLite · JWT Authentication · Role-Based Access Control</text>
+</svg>
+</body>
+</html>
