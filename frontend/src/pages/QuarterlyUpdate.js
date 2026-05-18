@@ -15,26 +15,31 @@ export default function QuarterlyUpdate() {
 
   useEffect(() => {
     api.get('/goals/cycles').then(r => {
-      const active = r.data.find(c => c.is_active) || r.data[0];
-      setCycles(r.data);
+      const list = Array.isArray(r.data) ? r.data : [];
+      const active = list.find(c => c.is_active) || list[0] || null;
+      setCycles(list);
       setActiveCycle(active);
-    });
+    }).catch(() => {});
   }, []);
 
   useEffect(() => {
     if (!activeCycle) return;
     api.get(`/goals/my-sheet/${activeCycle.id}`).then(r => {
       setSheetData(r.data);
-      // Pre-populate updates from existing data
       const upd = {};
-      r.data.goals?.forEach(goal => {
-        goal.updates?.forEach(u => {
+      (r.data.goals || []).forEach(goal => {
+        (goal.updates || []).forEach(u => {
           if (!upd[u.quarter]) upd[u.quarter] = {};
-          upd[u.quarter][goal.id] = { actual_value: u.actual_value || '', actual_date: u.actual_date || '', status: u.status || 'not_started', remark: u.employee_remark || '' };
+          upd[u.quarter][goal.id] = {
+            actual_value: u.actual_value || '',
+            actual_date: u.actual_date || '',
+            status: u.status || 'not_started',
+            remark: u.employee_remark || ''
+          };
         });
       });
       setUpdates(upd);
-    });
+    }).catch(() => {});
   }, [activeCycle]);
 
   const setUpdate = (quarter, goalId, field, val) => {
@@ -56,7 +61,6 @@ export default function QuarterlyUpdate() {
         remark: upd.remark || ''
       });
       toast.success(`Updated! Score: ${res.data.progress_score ? res.data.progress_score.toFixed(1) + '%' : 'Calculated'}`);
-      // Reload to get score
       const updated = await api.get(`/goals/my-sheet/${activeCycle.id}`);
       setSheetData(updated.data);
     } catch (e) {
@@ -91,13 +95,6 @@ export default function QuarterlyUpdate() {
     return '#ef4444';
   };
 
-  const avgScore = (goalId) => {
-    const goal = sheetData.goals?.find(g => g.id === goalId);
-    const scores = goal?.updates?.map(u => u.progress_score).filter(Boolean);
-    if (!scores?.length) return null;
-    return scores.reduce((a, b) => a + b, 0) / scores.length;
-  };
-
   return (
     <div style={styles.page}>
       <div style={styles.header}>
@@ -109,7 +106,7 @@ export default function QuarterlyUpdate() {
 
       <div style={styles.quarterTabs}>
         {QUARTERS.map(q => {
-          const hasUpdates = sheetData.goals?.some(g => g.updates?.find(u => u.quarter === q));
+          const hasUpdates = (sheetData.goals || []).some(g => (g.updates || []).find(u => u.quarter === q));
           return (
             <button key={q} onClick={() => setActiveQuarter(q)} style={{ ...styles.quarterTab, background: activeQuarter === q ? '#667eea' : '#fff', color: activeQuarter === q ? '#fff' : '#64748b', border: activeQuarter === q ? 'none' : '1px solid #e2e8f0' }}>
               {q} {hasUpdates ? '✓' : ''}
@@ -119,8 +116,8 @@ export default function QuarterlyUpdate() {
       </div>
 
       <div style={styles.goalsList}>
-        {sheetData.goals?.map(goal => {
-          const existingUpdate = goal.updates?.find(u => u.quarter === activeQuarter);
+        {(sheetData.goals || []).map(goal => {
+          const existingUpdate = (goal.updates || []).find(u => u.quarter === activeQuarter);
           const currentEdit = updates[activeQuarter]?.[goal.id] || {
             actual_value: existingUpdate?.actual_value || '',
             actual_date: existingUpdate?.actual_date || '',
@@ -156,15 +153,13 @@ export default function QuarterlyUpdate() {
                   {goal.uom_type !== 'zero' && goal.uom_type !== 'timeline' && (
                     <div style={styles.field}>
                       <label style={styles.label}>Actual Achievement</label>
-                      <input type="number" value={currentEdit.actual_value} onChange={e => setUpdate(activeQuarter, goal.id, 'actual_value', e.target.value)}
-                        style={styles.input} placeholder="Enter actual value" />
+                      <input type="number" value={currentEdit.actual_value} onChange={e => setUpdate(activeQuarter, goal.id, 'actual_value', e.target.value)} style={styles.input} placeholder="Enter actual value" />
                     </div>
                   )}
                   {goal.uom_type === 'zero' && (
                     <div style={styles.field}>
                       <label style={styles.label}>Actual Incidents</label>
-                      <input type="number" value={currentEdit.actual_value} onChange={e => setUpdate(activeQuarter, goal.id, 'actual_value', e.target.value)}
-                        style={styles.input} placeholder="0 = 100% score" />
+                      <input type="number" value={currentEdit.actual_value} onChange={e => setUpdate(activeQuarter, goal.id, 'actual_value', e.target.value)} style={styles.input} placeholder="0 = 100% score" />
                     </div>
                   )}
                   {goal.uom_type === 'timeline' && (
