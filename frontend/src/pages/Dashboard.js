@@ -24,24 +24,23 @@ export default function Dashboard() {
 
   useEffect(() => {
     api.get('/goals/cycles').then(r => {
-      const active = r.data.find(c => c.is_active) || r.data[0];
-      setCycles(r.data);
+      const list = Array.isArray(r.data) ? r.data : [];
+      const active = list.find(c => c.is_active) || list[0] || null;
+      setCycles(list);
       setActiveCycle(active);
-    });
+    }).catch(() => setLoading(false));
   }, []);
 
   useEffect(() => {
-    if (!activeCycle) return;
+    if (!activeCycle) { setLoading(false); return; }
     const fetches = [];
-
     if (user.role === 'employee') {
-      fetches.push(api.get(`/goals/my-sheet/${activeCycle.id}`).then(r => setMySheet(r.data)));
+      fetches.push(api.get(`/goals/my-sheet/${activeCycle.id}`).then(r => setMySheet(r.data)).catch(() => {}));
     }
     if (['manager', 'admin'].includes(user.role)) {
-      fetches.push(api.get(`/goals/team-sheets/${activeCycle.id}`).then(r => setTeamData(r.data)));
-      fetches.push(api.get(`/reports/completion/${activeCycle.id}`).then(r => setCompletion(r.data)));
+      fetches.push(api.get(`/goals/team-sheets/${activeCycle.id}`).then(r => setTeamData(Array.isArray(r.data) ? r.data : [])).catch(() => {}));
+      fetches.push(api.get(`/reports/completion/${activeCycle.id}`).then(r => setCompletion(r.data)).catch(() => {}));
     }
-
     Promise.all(fetches).finally(() => setLoading(false));
   }, [activeCycle, user.role]);
 
@@ -66,9 +65,9 @@ export default function Dashboard() {
       {user.role === 'employee' && mySheet && (
         <>
           <div style={styles.grid3}>
-            <StatCard icon="🎯" label="My Goals" value={mySheet.goals?.length || 0} color="#667eea" sub={`Max 8 allowed`} />
+            <StatCard icon="🎯" label="My Goals" value={mySheet.goals?.length || 0} color="#667eea" sub="Max 8 allowed" />
             <StatCard icon="📋" label="Sheet Status" value={statusLabel[mySheet.sheet?.status] || 'Not Started'} color={statusColor[mySheet.sheet?.status] || '#94a3b8'} sub="Current cycle" />
-            <StatCard icon="⚖️" label="Total Weightage" value={`${mySheet.goals?.reduce((s, g) => s + g.weightage, 0) || 0}%`} color={mySheet.goals?.reduce((s,g)=>s+g.weightage,0)===100?'#10b981':'#ef4444'} sub="Must be 100%" />
+            <StatCard icon="⚖️" label="Total Weightage" value={`${mySheet.goals?.reduce((s, g) => s + g.weightage, 0) || 0}%`} color={mySheet.goals?.reduce((s, g) => s + g.weightage, 0) === 100 ? '#10b981' : '#ef4444'} sub="Must be 100%" />
           </div>
 
           <div style={styles.section}>
@@ -80,7 +79,7 @@ export default function Dashboard() {
             </div>
             {!mySheet.sheet ? (
               <div style={styles.emptyState}>
-                <div style={{fontSize: 48}}>📋</div>
+                <div style={{ fontSize: 48 }}>📋</div>
                 <p>No goal sheet created yet for this cycle.</p>
                 <button onClick={() => navigate('/my-goals')} style={styles.primaryBtn}>Create Goal Sheet</button>
               </div>
@@ -109,7 +108,7 @@ export default function Dashboard() {
                 <h2 style={styles.sectionTitle}>Quarterly Progress</h2>
                 <button onClick={() => navigate('/quarterly-update')} style={styles.actionBtn}>Update →</button>
               </div>
-              <div style={{overflowX:'auto'}}>
+              <div style={{ overflowX: 'auto' }}>
                 <table style={styles.table}>
                   <thead>
                     <tr>
@@ -122,16 +121,14 @@ export default function Dashboard() {
                       <tr key={goal.id}>
                         <td style={styles.td}>{goal.title}</td>
                         {QUARTERS.map(q => {
-                          const upd = goal.updates?.find(u => u.quarter === q);
+                          const upd = Array.isArray(goal.updates) ? goal.updates.find(u => u.quarter === q) : null;
                           return (
                             <td key={q} style={styles.td}>
                               {upd ? (
-                                <div>
-                                  <div style={{...styles.scoreBadge, background: scoreColor(upd.progress_score)}}>
-                                    {upd.progress_score ? `${upd.progress_score.toFixed(1)}%` : upd.status}
-                                  </div>
+                                <div style={{ ...styles.scoreBadge, background: scoreColor(upd.progress_score) }}>
+                                  {upd.progress_score ? `${upd.progress_score.toFixed(1)}%` : upd.status}
                                 </div>
-                              ) : <span style={{color:'#cbd5e1'}}>—</span>}
+                              ) : <span style={{ color: '#cbd5e1' }}>—</span>}
                             </td>
                           );
                         })}
@@ -148,10 +145,10 @@ export default function Dashboard() {
       {['manager', 'admin'].includes(user.role) && completion && (
         <>
           <div style={styles.grid4}>
-            <StatCard icon="👥" label="Total Employees" value={completion.summary.total_employees} color="#667eea" />
-            <StatCard icon="✅" label="Approved" value={completion.summary.approved} color="#10b981" />
-            <StatCard icon="⏳" label="Submitted" value={completion.summary.submitted} color="#3b82f6" />
-            <StatCard icon="⚠️" label="Not Started" value={completion.summary.not_started} color="#f59e0b" />
+            <StatCard icon="👥" label="Total Employees" value={completion.summary?.total_employees || 0} color="#667eea" />
+            <StatCard icon="✅" label="Approved" value={completion.summary?.approved || 0} color="#10b981" />
+            <StatCard icon="⏳" label="Submitted" value={completion.summary?.submitted || 0} color="#3b82f6" />
+            <StatCard icon="⚠️" label="Not Started" value={completion.summary?.not_started || 0} color="#f59e0b" />
           </div>
 
           <div style={styles.section}>
@@ -159,7 +156,7 @@ export default function Dashboard() {
               <h2 style={styles.sectionTitle}>Team Goal Sheet Status</h2>
               <button onClick={() => navigate('/team-goals')} style={styles.actionBtn}>View All →</button>
             </div>
-            <div style={{overflowX:'auto'}}>
+            <div style={{ overflowX: 'auto' }}>
               <table style={styles.table}>
                 <thead>
                   <tr>
@@ -175,26 +172,26 @@ export default function Dashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {completion.employees.map(emp => (
-                    <tr key={emp.id} style={{background: '#fff'}}>
-                      <td style={styles.td}><strong>{emp.name}</strong><div style={{fontSize:11,color:'#94a3b8'}}>{emp.email}</div></td>
+                  {(completion.employees || []).map(emp => (
+                    <tr key={emp.id} style={{ background: '#fff' }}>
+                      <td style={styles.td}><strong>{emp.name}</strong><div style={{ fontSize: 11, color: '#94a3b8' }}>{emp.email}</div></td>
                       <td style={styles.td}>{emp.department}</td>
                       <td style={styles.td}>
-                        <span style={{...styles.statusPill, background: `${statusColor[emp.sheet_status] || '#94a3b8'}22`, color: statusColor[emp.sheet_status] || '#94a3b8'}}>
+                        <span style={{ ...styles.statusPill, background: `${statusColor[emp.sheet_status] || '#94a3b8'}22`, color: statusColor[emp.sheet_status] || '#94a3b8' }}>
                           {statusLabel[emp.sheet_status] || 'Not Started'}
                         </span>
                       </td>
                       <td style={styles.td}>{emp.goal_count || 0}</td>
-                      {['q1','q2','q3','q4'].map(q => (
+                      {['q1', 'q2', 'q3', 'q4'].map(q => (
                         <td key={q} style={styles.td}>
-                          <span style={{color: emp[`${q}_updates`] > 0 ? '#10b981' : '#d1d5db'}}>
+                          <span style={{ color: emp[`${q}_updates`] > 0 ? '#10b981' : '#d1d5db' }}>
                             {emp[`${q}_updates`] > 0 ? '✓' : '—'}
                           </span>
                         </td>
                       ))}
                       <td style={styles.td}>
                         {emp.sheet_status === 'submitted' && (
-                          <button onClick={() => navigate(`/team-goals`)} style={styles.reviewBtn}>Review</button>
+                          <button onClick={() => navigate('/team-goals')} style={styles.reviewBtn}>Review</button>
                         )}
                       </td>
                     </tr>
